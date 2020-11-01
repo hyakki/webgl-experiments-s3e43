@@ -1,0 +1,9 @@
+@import './../../../node_modules/bulma/sass/utilities/_all.sass';
+@import './../../../node_modules/bulma/sass/grid/_all.sass';
+
+.container {
+  position: relative;
+  max-width: calc(100vw / 16 * 14);
+  width: 1200px;
+  margin: 0 auto;
+}

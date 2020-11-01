@@ -1,0 +1,118 @@
+// stylelint-disable declaration-no-important
+/*
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+.h-visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+
+  /*
+   * Extends the .visuallyhidden class to allow the element
+   * to be focusable when navigated to via the keyboard:
+   * https://www.drupal.org/node/897638
+   */
+  &.is-focusable {
+    &:active,
+    &:focus {
+      position: static;
+      overflow: visible;
+      width: auto;
+      height: auto;
+      margin: 0;
+      clip: auto;
+    }
+  }
+}
+
+// Spacer
+
+// [class*='h-spacer-s'] {
+//   padding-top: get-spacing(s, s) !important;
+//   padding-bottom: get-spacing(s, s) !important;
+
+//   @include mq(m) {
+//     padding-top: get-spacing(s, m) !important;
+//     padding-bottom: get-spacing(s, m) !important;
+//   }
+
+//   @include mq(xl) {
+//     padding-top: get-spacing(s, l) !important;
+//     padding-bottom: get-spacing(s, l) !important;
+//   }
+// }
+
+// [class*='h-spacer-m'] {
+//   padding-top: get-spacing(m, s) !important;
+//   padding-bottom: get-spacing(m, s) !important;
+
+//   @include mq(m) {
+//     padding-top: get-spacing(m, m) !important;
+//     padding-bottom: get-spacing(m, m) !important;
+//   }
+
+//   @include mq(xl) {
+//     padding-top: get-spacing(m, l) !important;
+//     padding-bottom: get-spacing(m, l) !important;
+//   }
+// }
+
+// [class*='h-spacer-l'] {
+//   padding-top: get-spacing(l, s) !important;
+//   padding-bottom: get-spacing(l, s) !important;
+
+//   @include mq(m) {
+//     padding-top: get-spacing(l, m) !important;
+//     padding-bottom: get-spacing(l, m) !important;
+//   }
+
+//   @include mq(xl) {
+//     padding-top: get-spacing(l, l) !important;
+//     padding-bottom: get-spacing(l, l) !important;
+//   }
+// }
+
+// [class*='h-spacer-xl'] {
+//   padding-top: get-spacing(xl, s) !important;
+//   padding-bottom: get-spacing(xl, s) !important;
+
+//   @include mq(m) {
+//     padding-top: get-spacing(xl, m) !important;
+//     padding-bottom: get-spacing(xl, m) !important;
+//   }
+
+//   @include mq(xl) {
+//     padding-top: get-spacing(xl, l) !important;
+//     padding-bottom: get-spacing(xl, l) !important;
+//   }
+// }
+
+// [class*='h-spacer-xxl'] {
+//   padding-top: get-spacing(xxl, s) !important;
+//   padding-bottom: get-spacing(xxl, s) !important;
+
+//   @include mq(m) {
+//     padding-top: get-spacing(xxl, m) !important;
+//     padding-bottom: get-spacing(xxl, m) !important;
+//   }
+
+//   @include mq(xxxl) {
+//     padding-top: get-spacing(xxl, l) !important;
+//     padding-bottom: get-spacing(xxl, l) !important;
+//   }
+// }
+
+// Wrapper
+
+// .h-wrapper {
+//   width: 100%;
+//   max-width: 1440px;
+//   margin-right: auto;
+//   margin-left: auto;
+// }

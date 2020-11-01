@@ -1,0 +1,13 @@
+// Import fonts
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Playfair+Display&display=swap');
+
+body  {
+  font-family: $ff-default;
+  font-size: 1.6rem;
+  line-height: 1.4em;
+}
+
+h1 {
+  font-family: $ff-alt;
+  font-weight: 400;
+}

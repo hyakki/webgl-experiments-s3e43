@@ -1,0 +1,69 @@
+// Remove the unit of a length
+// @param {Number} $number - Number to remove unit from
+// @return {Number} - Unitless number
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+// Convert the unit of a length
+// @param {Number} $number - Number to convert the unit
+// @param {String} $unit - Unit to append to number
+/// @return {Number} - Number with unit
+@function convert-unit($number, $unit) {
+  @return unquote(strip-unit($number) + $unit);
+}
+
+// Calculate a ratio
+// @param {Number} $target - Target size
+// @param {Number} $context - Context size
+@function calc-ratio($target, $context) {
+  @return strip-unit($target / $context);
+}
+
+// Calculate a ratio into percentage
+// @param {Number} $target - Target size
+// @param {Number} $context - Context size
+@function calc-percent($target, $context) {
+  @return percentage(calc-ratio($target, $context));
+}
+
+// Get the size of x columns
+// @param {Number} $number - The number of columns
+// @param {Number} $total - The total number of columns
+// @return {Number} - The value
+@function col($number, $total: 16) {
+  @return calc((#{$number} / #{$total}) * 100%);
+}
+
+// Px to Rem:
+// Converts px to rem
+// @param {Number} $number - The px value
+// @return {Number} - The rem value
+@function rem($number) {
+  @return convert-unit((strip-unit($number) / strip-unit($base-font-size)), 'rem');
+}
+
+// Get spacing
+// @param {String} $size
+// @param {String} $viewport
+@function get-spacing($size, $viewport) {
+  @if (map-has-key($spacings-map, $size)) {
+    $value: map-get(map-get($spacings-map, $size), $viewport);
+
+    @return $value;
+  } @else {
+    @warn 'Spacing #{$size} does not exist';
+  }
+}
+
+@function get-breakpoint($name) {
+  @if (map-has-key($mq-breakpoints, $name)) {
+    @return rem(map-get($mq-breakpoints, $name));
+  } @else {
+    @warn 'Breakpoint #{$name} does not exist';
+  }
+}

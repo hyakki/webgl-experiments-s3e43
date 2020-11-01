@@ -1,0 +1,128 @@
+/**
+* Dev, based on $env (from gulp)
+*/
+$env: 'development' !default;
+
+/**
+ * Colors
+ * for the naming use http://chir.ag/projects/name-that-color/
+ * from darker to lighter ?
+ */
+
+// Global colors
+$c-black: #000;
+$c-gray-darkest: #202020;
+$c-gray-darker: #717171;
+$c-gray-dark: #8d8d8d;
+$c-gray-medium: #c8c8c8;
+$c-gray-light: #dfdfdf;
+$c-gray-lighter: #efefef;
+$c-white: #fff;
+$c-transparent: transparent;
+
+// Dev colors
+$c-dev-bg: #3e4b55;
+$c-dev-success: #090;
+$c-dev-error: #d90b0b;
+$c-dev-warning: #f50;
+$c-dev-info: #829deb;
+$c-dev: $c-dev-warning;
+
+// Project colors
+$charcoal: #264653ff;
+$persian-green: #2a9d8fff;
+$orange-yellow-crayola: #e9c46aff;
+$sandy-brown: #f4a261ff;
+$burnt-sienna: #e76f51ff;
+
+$c-green-dark: $charcoal;
+$c-green: $persian-green;
+$c-yellow: $orange-yellow-crayola;
+$c-orange: $burnt-sienna;
+$c-orange-light: $sandy-brown;
+
+/**
+* Typography
+*/
+
+$base-font-size: 10px !default;
+
+$ff-default: 'Lato', sans-serif;
+$ff-alt: 'Roboto Slab', serif;
+
+$body-text-s: 1.5em;
+$body-text-m: 1.6em;
+$body-text-l: 1.8em;
+
+$font-sizes: (
+  h1: 3.6rem,
+  h2: 2.8rem,
+  h3: 2.4rem,
+  h4: 1.4rem,
+);
+
+/**
+* RWD
+*/
+$mq-responsive: true;
+$mq-static-breakpoint: 'large';
+
+/*
+ * Layout & spacing
+ */
+
+$spacing: 2rem;
+$wrapper-width: get-breakpoint('xxl');
+$columns-number: 12;
+$header-height: 5rem;
+$border-radius: 8px;
+
+$spacings-map: (
+  xxl: (
+    l: 160px,
+    m: 120px,
+    s: 80px,
+  ),
+  xl: (
+    l: 120px,
+    m: 80px,
+    s: 60px,
+  ),
+  l: (
+    l: 80px,
+    m: 60px,
+    s: 40px,
+  ),
+  m: (
+    l: 60px,
+    m: 40px,
+    s: 30px,
+  ),
+  s: (
+    l: 40px,
+    m: 30px,
+    s: 20px,
+  ),
+  xs: (
+    l: 20px,
+    m: 15px,
+    s: 10px,
+  ),
+  xxs: (
+    l: 10px,
+    m: 10px,
+    s: 10px,
+  )
+);
+
+// $content-width: 144rem;
+
+// Wrapper
+$wrapper-spacing: col(1, 16);
+$wrapper-width-s: get-breakpoint('s');
+$wrapper-width-m: get-breakpoint('m');
+$wrapper-width-l: get-breakpoint('l'); // getting wrong values from those!
+$wrapper-width-xl: $wrapper-width;
+
+// Bulma
+$column-gap: 0;

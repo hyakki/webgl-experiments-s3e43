@@ -1,0 +1,153 @@
+/*
+ * Helpers
+ */
+
+/*
+ * Clearfix: contain floats
+ * http://cssmojo.com/latest_new_clearfix_so_far/
+ */
+%cf {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+/*
+ * Hide visually and from screen readers:
+ * http://juicystudio.com/article/screen-readers-display-none.php
+ */
+%hidden {
+  display: none !important; /* stylelint-disable-line declaration-no-important */
+  visibility: hidden;
+}
+
+/*
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+%visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+}
+
+/**
+ * Typo
+ */
+%fw-lightest {
+  font-weight: 100;
+}
+
+%fw-light {
+  font-weight: 300;
+}
+
+%fw-normal {
+  font-weight: 400;
+}
+
+%fw-medium {
+  font-weight: 500;
+}
+
+%fw-semi {
+  font-weight: 600;
+}
+
+%fw-bold {
+  font-weight: 700;
+}
+
+%fw-ultra {
+  font-weight: 800;
+}
+
+%fw-black {
+  font-weight: 900;
+}
+
+%fs-italic {
+  font-style: italic;
+}
+
+%fs-normal {
+  font-style: normal;
+}
+
+%ff-alt {
+  font-family: $ff-alt;
+}
+
+%text-left {
+  text-align: left;
+}
+
+%text-center {
+  text-align: center;
+}
+
+%text-right {
+  text-align: right;
+}
+
+%text-justify {
+  text-align: justify;
+}
+
+%text-uppercase {
+  text-transform: uppercase;
+}
+
+%text-capitalize {
+  text-transform: capitalize;
+}
+
+%text-notransform {
+  text-transform: none;
+}
+
+%text-nodecoration {
+  text-decoration: none;
+}
+
+%button-nostyle {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0 none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none; /* stylelint-disable-line */
+  appearance: none;
+  cursor: pointer;
+}
+
+%list-nostyle {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+%select-nostyle {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0 none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none; /* stylelint-disable-line */
+  -moz-appearance: none; /* stylelint-disable-line */
+
+  &::-ms-expand { // sass-lint:disable-line no-vendor-prefixes
+    display: none;
+  }
+}
