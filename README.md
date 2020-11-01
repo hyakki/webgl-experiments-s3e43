@@ -1,24 +1,8 @@
-# webgl-experiments-boilerplate
+# webgl-experiments-s3e43
 
-## Project setup
-```
-yarn install
-```
+## Demo
+https://hyakki.github.io/webgl-experiments-s3e43/
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Credits
+...
+Yuri Artyukh - ...
