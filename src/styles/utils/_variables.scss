@@ -29,6 +29,8 @@ $c-dev-info: #829deb;
 $c-dev: $c-dev-warning;
 
 // Project colors
+$c-background: #171b1f;
+
 $charcoal: #264653ff;
 $persian-green: #2a9d8fff;
 $orange-yellow-crayola: #e9c46aff;
@@ -47,8 +49,8 @@ $c-orange-light: $sandy-brown;
 
 $base-font-size: 10px !default;
 
-$ff-default: 'Lato', sans-serif;
-$ff-alt: 'Roboto Slab', serif;
+$ff-default: 'Roboto Condensed', sans-serif;
+$ff-alt: 'Roboto Slab', sans-serif;
 
 $body-text-s: 1.5em;
 $body-text-m: 1.6em;
