@@ -5,8 +5,11 @@
 <script lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import * as THREE from 'three'
+import t1 from './textures/t1.jpg'
+import t2 from './textures/t2.jpg'
+import t3 from './textures/t3.jpg'
+import t4 from './textures/t4.jpg'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import dat from 'dat.gui'
@@ -22,15 +25,29 @@ export default {
     const meshes: THREE.Mesh[] = []
     const margin = 0.1
 
+    const velocity = new THREE.Vector2(0.0, 0)
+    const acc = new THREE.Vector2(0.0, 0)
+
     let camera, scene, renderer, geometry, material
     let group
     let settings, gui
-    let composer
+    let composer, renderPass, shaderPass
+    let range
+
+    const textures = [
+      new THREE.TextureLoader().load(t1),
+      new THREE.TextureLoader().load(t2),
+      new THREE.TextureLoader().load(t3),
+      new THREE.TextureLoader().load(t4),
+    ]
 
     const setSize = () => {
       const { width, height } = container.value.getBoundingClientRect()
 
+      renderer.setPixelRatio(window.devicePixelRatio)
+
       renderer.setSize(width, height)
+      composer.setSize(width, height)
     }
 
     const setCameraAspect = () => {
@@ -54,23 +71,32 @@ export default {
     }
 
     const update = () => {
-      const time = clock.elapsedTime
-      const delta = clock.getDelta()
-      const velocity = settings.speed * delta + (settings.acc * time) / 1000.0
+      const time = clock.getElapsedTime()
+      // const delta = clock.getDelta()
+      // velocity = settings.speed
+      velocity.add(acc)
 
-      settings.velocity = velocity
+      // const decc = velocity.clone().multiplyScalar(-0.1)
+
+      // acc.sub(velocity.divideScalar(0.1))
+      acc.x = -velocity.x / 15.0
+      // acc = velocity.clone().multiplyScalar(-1)
+      // acc.multiplyScalar(-0.01)
+      // acc.set(-velocity.x / 10.0, -velocity.y / 10.0)
+      // acc.sub(decc)
+
+      // acc.x = THREE.MathUtils.lerp(acc.x, 0, 0.05)
+      // velocity.x = THREE.MathUtils.lerp(velocity.x, 0, 0.3)
 
       group.children.forEach(c => {
-        c.position.x = calcPos(
-          c.position.x - velocity,
-          (4 + (margin * meshes.length) / 2) * -1,
-          (4 + (margin * meshes.length) / 2) * 1
-        )
+        c.position.x = calcPos(c.position.x - velocity.x, -range, range)
         c.material.uniforms.uPos.value = c.position.x
         c.material.uniforms.time.value = time
       })
 
       camera.position.z = settings.cameraZ
+
+      shaderPass.uniforms.uShift.value = velocity.length()
 
       composer.render(scene, camera)
       gui.updateDisplay()
@@ -78,16 +104,16 @@ export default {
 
     const initGUI = () => {
       settings = {
-        speed: 0.5,
         acc: 0.0,
         velocity: 0.0,
         cameraZ: 3.0,
+        uShift: 0.0,
       }
 
       gui = new dat.GUI({ name: 'My GUI' })
-      gui.add(settings, 'speed', -5.0, 5.0, 0.1)
       gui.add(settings, 'acc', 0.0, 5.0, 0.01)
-      gui.add(settings, 'velocity', 0, 1000.0, 0.001)
+      gui.add(settings, 'velocity', 0, 1000.0, 0.01)
+      gui.add(settings, 'uShift', 0, 1.0, 0.01)
       gui.add(settings, 'cameraZ', 0, 10.0, 0.1)
     }
 
@@ -103,12 +129,12 @@ export default {
 
       geometry = new THREE.PlaneBufferGeometry(1.0, 1.77, 1.0)
       material = new THREE.ShaderMaterial({
-        fragmentShader: require('./fragment.glsl').default,
-        vertexShader: require('./vertex.glsl').default,
+        vertexShader: require('./glsl/card.vert').default,
+        fragmentShader: require('./glsl/card.frag').default,
         uniforms: {
-          rgb: { value: [1, 1, 1] },
           time: { value: 0 },
           uPos: { value: 0.0 },
+          uTexture: { value: null },
         },
         transparent: true,
       })
@@ -119,15 +145,13 @@ export default {
         const m = new THREE.Mesh(geometry, material.clone())
 
         m.position.x = (1.0 + margin) * i
-        m.material.uniforms.rgb.value = [
-          Math.random(),
-          Math.random(),
-          Math.random(),
-        ]
+        m.material.uniforms.uTexture.value = textures[i % textures.length]
 
         meshes.push(m)
         group.add(m)
       }
+
+      range = 4 + (margin * meshes.length) / 2
 
       scene.add(group)
 
@@ -136,15 +160,15 @@ export default {
 
       composer = new EffectComposer(renderer)
 
-      const renderPass = new RenderPass(scene, camera)
-      const shaderPass = new ShaderPass(CopyShader)
-      // const shaderPass = new ShaderPass({
-      //   fragmentShader: require('./pass.frag').default,
-      //   vertexShader: require('./pass.vert').default,
-      //   uniforms: {
-      //     tDiffuse: { value: null },
-      //   },
-      // })
+      renderPass = new RenderPass(scene, camera)
+      shaderPass = new ShaderPass({
+        fragmentShader: require('./glsl/pass.frag').default,
+        vertexShader: require('./glsl/pass.vert').default,
+        uniforms: {
+          tDiffuse: { value: null },
+          uShift: { value: 1.0 },
+        },
+      })
 
       composer.addPass(renderPass)
       composer.addPass(shaderPass)
@@ -163,15 +187,23 @@ export default {
       setCameraAspect()
     }
 
+    const mouseWheelHandler = e => {
+      const { deltaY } = e
+
+      velocity.x += deltaY > 0 ? 0.05 : -0.05
+    }
+
     onMounted(() => {
       init()
 
       window.addEventListener('resize', viewportHandler)
+      window.addEventListener('mousewheel', mouseWheelHandler)
     })
 
     onUnmounted(() => {
       gui.destroy()
       window.removeEventListener('resize', viewportHandler)
+      window.removeEventListener('mousewheel', mouseWheelHandler)
     })
 
     return {
