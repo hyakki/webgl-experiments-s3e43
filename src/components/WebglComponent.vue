@@ -5,6 +5,10 @@
 <script lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import * as THREE from 'three'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import dat from 'dat.gui'
 
 // eslint-disable-next-line
@@ -15,12 +19,13 @@ export default {
   setup() {
     const container = ref()
     const clock = new THREE.Clock()
+    const meshes: THREE.Mesh[] = []
+    const margin = 0.1
+
     let camera, scene, renderer, geometry, material
     let group
     let settings, gui
-
-    const meshes: any[] = []
-    const margin = 0.1
+    let composer
 
     const setSize = () => {
       const { width, height } = container.value.getBoundingClientRect()
@@ -67,11 +72,11 @@ export default {
 
       camera.position.z = settings.cameraZ
 
-      renderer.render(scene, camera)
+      composer.render(scene, camera)
       gui.updateDisplay()
     }
 
-    const init = () => {
+    const initGUI = () => {
       settings = {
         speed: 0.5,
         acc: 0.0,
@@ -84,6 +89,10 @@ export default {
       gui.add(settings, 'acc', 0.0, 5.0, 0.01)
       gui.add(settings, 'velocity', 0, 1000.0, 0.001)
       gui.add(settings, 'cameraZ', 0, 10.0, 0.1)
+    }
+
+    const init = () => {
+      initGUI()
 
       const { width, height } = container.value.getBoundingClientRect()
 
@@ -93,8 +102,6 @@ export default {
       scene = new THREE.Scene()
 
       geometry = new THREE.PlaneBufferGeometry(1.0, 1.77, 1.0)
-      // !DEV
-      // material = new THREE.MeshNormalMaterial()
       material = new THREE.ShaderMaterial({
         fragmentShader: require('./fragment.glsl').default,
         vertexShader: require('./vertex.glsl').default,
@@ -124,17 +131,25 @@ export default {
 
       scene.add(group)
 
-      // const surface = new THREE.Mesh(
-      //   new THREE.PlaneBufferGeometry(1.0, 1.77),
-      //   new THREE.MeshNormalMaterial({
-      //     wireframe: false,
-      //   })
-      // )
-
-      // scene.add(surface)
-
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true })
       // new OrbitControls(camera, renderer.domElement)
+
+      composer = new EffectComposer(renderer)
+
+      const renderPass = new RenderPass(scene, camera)
+      const shaderPass = new ShaderPass(CopyShader)
+      // const shaderPass = new ShaderPass({
+      //   fragmentShader: require('./pass.frag').default,
+      //   vertexShader: require('./pass.vert').default,
+      //   uniforms: {
+      //     tDiffuse: { value: null },
+      //   },
+      // })
+
+      composer.addPass(renderPass)
+      composer.addPass(shaderPass)
+
+      shaderPass.renderToScreen = true
 
       setSize()
       container.value.appendChild(renderer.domElement)
