@@ -12,10 +12,9 @@ import t4 from './textures/t4.jpg'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import Hammer from 'hammerjs'
 import dat from 'dat.gui'
-
-// eslint-disable-next-line
-// let OrbitControls = require('three-orbit-controls')(THREE)
+import gsap from 'gsap'
 
 export default {
   name: 'WebglComponent',
@@ -33,6 +32,8 @@ export default {
     let settings, gui
     let composer, renderPass, shaderPass
     let range
+    let hammer
+    let demoStarted = false
 
     const textures = [
       new THREE.TextureLoader().load(t1),
@@ -72,21 +73,11 @@ export default {
 
     const update = () => {
       const time = clock.getElapsedTime()
-      // const delta = clock.getDelta()
-      // velocity = settings.speed
-      velocity.add(acc)
 
-      // const decc = velocity.clone().multiplyScalar(-0.1)
-
-      // acc.sub(velocity.divideScalar(0.1))
-      acc.x = -velocity.x / 15.0
-      // acc = velocity.clone().multiplyScalar(-1)
-      // acc.multiplyScalar(-0.01)
-      // acc.set(-velocity.x / 10.0, -velocity.y / 10.0)
-      // acc.sub(decc)
-
-      // acc.x = THREE.MathUtils.lerp(acc.x, 0, 0.05)
-      // velocity.x = THREE.MathUtils.lerp(velocity.x, 0, 0.3)
+      if (!demoStarted) {
+        velocity.add(acc)
+        acc.x = -velocity.x / 15.0
+      }
 
       group.children.forEach(c => {
         c.position.x = calcPos(c.position.x - velocity.x, -range, range)
@@ -96,24 +87,46 @@ export default {
 
       camera.position.z = settings.cameraZ
 
-      shaderPass.uniforms.uShift.value = velocity.length()
+      shaderPass.uniforms.uShift.value = velocity.length() / 10.0
 
       composer.render(scene, camera)
       gui.updateDisplay()
     }
 
+    const startDemo = () => {
+      demoStarted = true
+
+      const tl = gsap.timeline({
+        // repeat: -1,
+      })
+
+      tl.to(velocity, {
+        x: 0.02,
+        duration: 1.0,
+      })
+
+      // tl.to(velocity, {
+      //   x: 0,
+      //   duration: 1.0,
+      // })
+
+      // tl.to(velocity, {
+      //   x: -0.05,
+      //   duration: 2.0,
+      // })
+
+      // tl.to(velocity, {
+      //   x: 0,
+      //   duration: 1.0,
+      // })
+    }
+
     const initGUI = () => {
       settings = {
-        acc: 0.0,
-        velocity: 0.0,
-        cameraZ: 3.0,
-        uShift: 0.0,
+        cameraZ: 2.0,
       }
 
-      gui = new dat.GUI({ name: 'My GUI' })
-      gui.add(settings, 'acc', 0.0, 5.0, 0.01)
-      gui.add(settings, 'velocity', 0, 1000.0, 0.01)
-      gui.add(settings, 'uShift', 0, 1.0, 0.01)
+      gui = new dat.GUI({ name: 'My GUI', closed: true })
       gui.add(settings, 'cameraZ', 0, 10.0, 0.1)
     }
 
@@ -156,7 +169,6 @@ export default {
       scene.add(group)
 
       renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true })
-      // new OrbitControls(camera, renderer.domElement)
 
       composer = new EffectComposer(renderer)
 
@@ -180,6 +192,8 @@ export default {
 
       clock.start()
       renderer.setAnimationLoop(update)
+
+      // startDemo()
     }
 
     const viewportHandler = () => {
@@ -196,12 +210,23 @@ export default {
     onMounted(() => {
       init()
 
+      hammer = new Hammer.Manager(container.value)
+      hammer.add(
+        new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 })
+      )
+
+      hammer.on('pan', e => {
+        velocity.x += e.deltaX / 10000.0
+      })
+
       window.addEventListener('resize', viewportHandler)
       window.addEventListener('mousewheel', mouseWheelHandler)
     })
 
     onUnmounted(() => {
       gui.destroy()
+      hammer.destroy()
+
       window.removeEventListener('resize', viewportHandler)
       window.removeEventListener('mousewheel', mouseWheelHandler)
     })

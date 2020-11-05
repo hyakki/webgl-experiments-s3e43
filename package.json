@@ -14,9 +14,9 @@
     "glslify": "^7.1.1",
     "glslify-loader": "^2.0.0",
     "gsap": "^3.5.1",
+    "hammerjs": "^2.0.8",
     "raw-loader": "^4.0.2",
     "three": "^0.121.1",
-    "three-orbit-controls": "^82.1.0",
     "vue": "^3.0.0",
     "vue-aware": "^0.2.4",
     "vue-router": "^4.0.0-0"
