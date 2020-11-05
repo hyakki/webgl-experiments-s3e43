@@ -72,7 +72,7 @@ export default {
     }
 
     const update = () => {
-      const time = clock.getElapsedTime()
+      clock.getElapsedTime()
 
       if (!demoStarted) {
         velocity.add(acc)
@@ -82,7 +82,6 @@ export default {
       group.children.forEach(c => {
         c.position.x = calcPos(c.position.x - velocity.x, -range, range)
         c.material.uniforms.uPos.value = c.position.x
-        c.material.uniforms.time.value = time
       })
 
       camera.position.z = settings.cameraZ
@@ -93,32 +92,17 @@ export default {
       gui.updateDisplay()
     }
 
-    const startDemo = () => {
+    const playDemo = (activate = false) => {
+      if (!activate) {
+        return
+      }
+
       demoStarted = true
 
-      const tl = gsap.timeline({
-        // repeat: -1,
-      })
-
-      tl.to(velocity, {
+      gsap.to(velocity, {
         x: 0.02,
         duration: 1.0,
       })
-
-      // tl.to(velocity, {
-      //   x: 0,
-      //   duration: 1.0,
-      // })
-
-      // tl.to(velocity, {
-      //   x: -0.05,
-      //   duration: 2.0,
-      // })
-
-      // tl.to(velocity, {
-      //   x: 0,
-      //   duration: 1.0,
-      // })
     }
 
     const initGUI = () => {
@@ -145,7 +129,6 @@ export default {
         vertexShader: require('./glsl/card.vert').default,
         fragmentShader: require('./glsl/card.frag').default,
         uniforms: {
-          time: { value: 0 },
           uPos: { value: 0.0 },
           uTexture: { value: null },
         },
@@ -193,7 +176,7 @@ export default {
       clock.start()
       renderer.setAnimationLoop(update)
 
-      // startDemo()
+      playDemo(false)
     }
 
     const viewportHandler = () => {
@@ -210,17 +193,20 @@ export default {
     onMounted(() => {
       init()
 
-      hammer = new Hammer.Manager(container.value)
-      hammer.add(
-        new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 })
-      )
-
-      hammer.on('pan', e => {
-        velocity.x += e.deltaX / 10000.0
-      })
-
       window.addEventListener('resize', viewportHandler)
-      window.addEventListener('mousewheel', mouseWheelHandler)
+
+      if (!demoStarted) {
+        hammer = new Hammer.Manager(container.value)
+        hammer.add(
+          new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 })
+        )
+
+        hammer.on('pan', e => {
+          velocity.x += e.deltaX / 10000.0
+        })
+
+        window.addEventListener('mousewheel', mouseWheelHandler)
+      }
     })
 
     onUnmounted(() => {
