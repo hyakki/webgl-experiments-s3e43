@@ -1,3 +1,9 @@
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+#else
+  precision mediump float;
+#endif
+
 uniform sampler2D tDiffuse;
 uniform float uShift;
 varying vec2 vUv;
@@ -7,7 +13,7 @@ float map(float value, float min1, float max1, float min2, float max2) {
 }
 
 float parabola(float x, float k) {
-	return pow(4.0f * x * (1.0f - x), k);
+	return pow(4.0 * x * (1.0 - x), k);
 }
 
 vec4 RGBShift(sampler2D tDiffuse, vec2 uv, vec4 color, float shift, float strength) {
