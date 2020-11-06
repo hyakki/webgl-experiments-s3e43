@@ -1,9 +1,11 @@
-# webgl-experiments-s3e43
+# webgl-experiments-s3e42
 
 ## Demo
 https://hyakki.github.io/webgl-experiments-s3e43/
 
 ## Credits
-...
+Original website: https://www.lamadone.studio/
 
-Yuri Artyukh - ...
+Developer & Design: https://socialclubparis.com/
+
+Yuri Artyukh - [#s3e43 ALL YOUR HTML, WebGL Distorted Infinite Slider with pixi.js](https://youtu.be/mrSRESnKRCU)
